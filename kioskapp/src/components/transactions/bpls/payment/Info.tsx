@@ -61,15 +61,17 @@ const PaymentInformation = () => {
           classname="text-[25px] leading-normal p-5"
         />
       </div>
-      <div className="flex flex-col gap-8 text-[28px]">
+      <div className="flex flex-col gap-4 text-[28px]">
         <Textbox
           label="Payer Name"
-          className="w-full !p-4 text-[40px] text-start border-b-2 border-black rounded-none"
+          labelStyle="!p-1"
+          className="w-full !p-4 text-[40px] text-start border-b-2 border-black rounded-none !h-[70px]"
           ref={payerNameInput}
         />
         <Textbox
           label="Payer Address"
-          className="w-full !p-4 text-[40px] text-start border-b-2 border-black rounded-none"
+          labelStyle="!p-1"
+          className="w-full !p-4 text-[40px] text-start border-b-2 border-black rounded-none !h-[70px]"
           ref={payerAddressInput}
         />
       </div>

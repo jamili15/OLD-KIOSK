@@ -26,7 +26,7 @@ const PaymentPrintTicket: ForwardRefRenderFunction<
       <div className="w-full flex justify-center items-center gap-3 pb-8">
         {ticketInfo.map((item, index) => (
           <React.Fragment key={index}>
-            <div className="fixed top-2 left-2">
+            <div className="fixed top-2 left-5">
               <Image
                 src={item.logo.src}
                 alt={""}
@@ -38,29 +38,29 @@ const PaymentPrintTicket: ForwardRefRenderFunction<
             <div className="flex flex-col items-center ml-10 pt-4">
               <Title
                 text={item.header.title}
-                classname="uppercase text-[17px]"
+                classname="uppercase text-[15px]"
               />
               <Title
                 text={item.subheader.title}
-                classname="uppercase text-[17px] leading-4"
+                classname="uppercase text-[15px] leading-4"
               />
             </div>
           </React.Fragment>
         ))}
       </div>
-      <div className="flex gap-x-12 justify-center">
+      <div className="flex gap-x-8 justify-center">
         <div className="">{QRCode}</div>
         <div className="w-[2px] bg-black"></div>
         <div className="flex flex-col justify-center items-center uppercase">
-          <Title text={"Queue No"} textSize="text-[30px]" />
-          <Title text={seriesno} textSize="text-[40px]" />
+          <Title text={"Queue No"} textSize="text-[28px]" />
+          <Title text={seriesno} textSize="text-[38px]" />
         </div>
       </div>
       <div className="flex justify-center items-center mb-[-10px]">
         <Title
           text="present this receipt to the collector"
           classname="uppercase"
-          textSize="text-[18px]"
+          textSize="text-[13px]"
         />
       </div>
       <table>
@@ -68,12 +68,12 @@ const PaymentPrintTicket: ForwardRefRenderFunction<
           {headers.map((label, index) => (
             <tr key={index}>
               <td
-                className="capitalize"
-                style={{ width: "150px", height: "20px", fontSize: "20px" }}
+                className="capitalize pl-5"
+                style={{ width: "150px", height: "20px", fontSize: "14px" }}
               >
                 {label}
               </td>
-              <td style={{ width: "", height: "20px", fontSize: "20px" }}>
+              <td style={{ width: "", height: "20px", fontSize: "14px" }}>
                 {label === "payer" && payerName}
                 {label === "address" && addr}
                 {label === "particulars" && "OSCP Billing And Payment"}
@@ -83,7 +83,7 @@ const PaymentPrintTicket: ForwardRefRenderFunction<
           ))}
         </tbody>
       </table>
-      <div className="w-[400px]">{QRData}</div>
+      <div className="w-[400px] pl-5 !text-[15px]">{QRData}</div>
     </div>
   </div>
 );

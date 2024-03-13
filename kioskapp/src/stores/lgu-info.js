@@ -18,7 +18,7 @@ export const ticketInfo = [
   {
     logo: {
       src: "/_custom/lgu-logo.jpg",
-      width: 150,
+      width: 70,
     },
     header: {
       title: "Republic of the Philippines",
