@@ -175,7 +175,7 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                                     : "",
                                   `${payerName}`,
                                   payerAddress ? `${payerAddress}` : "",
-                                  "Business Billing and Payment",
+                                  "Business and Licensing",
                                   combinedData ? `${combinedData}` : "",
                                   billingInfo.amount
                                     ? `${billingInfo.amount.toLocaleString()}`

@@ -58,7 +58,7 @@ const OboInfo = () => {
           <div>
             <Title text={"Billing Details"} />
           </div>
-          <div className="max-h-[500px] !h-[450px] w-full overflow-auto">
+          <div className="max-h-[500px] !h-[350px] w-full overflow-auto">
             <table className="table-auto w-full text-left">
               <thead className="sticky top-0 bg-white">
                 <tr>
