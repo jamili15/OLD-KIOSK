@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
           width={150}
           height={0}
           loading="eager"
-          style={{ width: 150, height: 0 }}
+          style={{ width: 150, height: 50 }}
         />
       </div>
     </footer>
