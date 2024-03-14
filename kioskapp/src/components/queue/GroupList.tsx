@@ -1,5 +1,4 @@
-import { createFetch } from "@/libs/fetch";
-import { fetchNextSeries } from "@/services/api/queue";
+import { lookupService } from "@/libs/client-service";
 import React, { useState } from "react";
 import Title from "../ui/Title";
 import QueueSectionList from "./SectionList";
@@ -24,13 +23,18 @@ const QueueGroupList: React.FC<QueueGroupListProps> = ({ groups }) => {
   const [isQueueTicketOpen, setIsQueueTicketOpen] = useState(false);
   const openQueueTicket = () => setIsQueueTicketOpen(true);
   const closeQueueTicket = () => setIsQueueTicketOpen(false);
+  const svc = lookupService("BplsBillingService");
+  const [ticket, setTicket] = useState();
+  const [txndate, setTxndate] = useState();
 
-  const { value: showticket, execute } = createFetch(fetchNextSeries);
-
-  function nextTicket(sectionid: string) {
-    execute({ sectionid });
+  const nextTicket = async (sectionid: string) => {
+    const data = await svc?.invoke("fetchNextSeries", {
+      sectionid: sectionid,
+    });
+    setTicket(data.ticketno);
+    setTxndate(data.txndatestr);
     openQueueTicket();
-  }
+  };
 
   return (
     <div className="flex flex-col gap-y-14">
@@ -53,12 +57,12 @@ const QueueGroupList: React.FC<QueueGroupListProps> = ({ groups }) => {
         </div>
       ))}
 
-      {showticket && (
+      {ticket && (
         <QueueTicket
           isOpen={isQueueTicketOpen}
           onClose={closeQueueTicket}
-          txndatestr={showticket.txndatestr}
-          ticketno={showticket.ticketno}
+          txndatestr={txndate}
+          ticketno={ticket}
         />
       )}
     </div>

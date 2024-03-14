@@ -1,24 +1,23 @@
 import ActionBar from "@/components/layout/ActionBar";
 import OboInfo from "@/components/transactions/obo/details/Info";
 import Button from "@/components/ui/Button";
-import { createFetch } from "@/libs/fetch";
-import { generateCode } from "@/services/api/obo";
 import { useOboBillingContext } from "@/services/context/obo-context";
 import { useStepper } from "@/services/context/stepper-context";
 import Layout from "./layout";
+import { lookupService } from "@/libs/client-service";
 
 const OboBillingPage = () => {
   const { goToNextStep, goToPrevStep } = useStepper();
-  const { oboBillingInfo, setCode, setSection } = useOboBillingContext();
-  const { execute } = createFetch(generateCode);
+  const { oboBill, setCode, setSection } = useOboBillingContext();
+  const svc = lookupService("OboBillingService");
 
   const nextPage = async () => {
-    const response = await execute({
-      refno: oboBillingInfo.appno,
-      txntype: oboBillingInfo.txntype,
+    const data = await svc?.invoke("generateCode", {
+      refno: oboBill.appno,
+      txntype: oboBill.txntype,
     });
-    setCode(response?.code);
-    setSection(response?.queuesection);
+    setCode(data.code);
+    setSection(data.queuesection);
     goToNextStep();
   };
 

@@ -18,7 +18,7 @@ interface CardProps {
 const Card: React.FC<CardProps> = ({ image, title, onClick }) => {
   return (
     <div
-      className={`relative flex flex-col text-gray-700 bg-white shadow-2xl rounded-lg w-96 border border-gray-400`}
+      className={`relative flex flex-col text-gray-700 bg-white shadow-2xl rounded-lg w-96 border-4`}
       onClick={onClick}
     >
       <div

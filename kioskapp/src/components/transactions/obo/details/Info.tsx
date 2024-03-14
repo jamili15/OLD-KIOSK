@@ -1,9 +1,10 @@
 import Currency from "@/components/ui/Currency";
 import Input from "@/components/ui/Input";
 import Title from "@/components/ui/Title";
-import { createFetch } from "@/libs/fetch";
-import { getBilling } from "@/services/api/obo";
+import { lookupService } from "@/libs/client-service";
+
 import { useOboBillingContext } from "@/services/context/obo-context";
+import { loadBill } from "@/utils/obo";
 import { useEffect } from "react";
 
 interface ItemType {
@@ -20,22 +21,16 @@ interface ItemType {
 }
 
 const OboInfo = () => {
-  const { value } = createFetch(getBilling);
-  const { oboBillingInfo, setOboBillingInfo } = useOboBillingContext();
-  useEffect(() => {
-    if (value && value.info) {
-      setOboBillingInfo(value.info);
-    }
-  }, [oboBillingInfo, value, setOboBillingInfo]);
+  const { oboBill } = useOboBillingContext();
 
   const headers = ["Particulars", "Amount"];
 
   const inputConfigs = [
-    { caption: oboBillingInfo?.trackingno, label: "Tracking No." },
-    { caption: oboBillingInfo?.permittype, label: "Permit Type" },
-    { caption: oboBillingInfo?.title, label: "Project Name" },
-    { caption: oboBillingInfo?.applicant.name, label: "Applicant" },
-    { caption: oboBillingInfo?.appno, label: "Application No." },
+    { caption: oboBill?.trackingno, label: "Tracking No." },
+    { caption: oboBill?.permittype, label: "Permit Type" },
+    { caption: oboBill?.title, label: "Project Name" },
+    { caption: oboBill?.applicant.name, label: "Applicant" },
+    { caption: oboBill?.appno, label: "Application No." },
     { caption: "", label: "Application Type" },
   ];
 
@@ -75,9 +70,9 @@ const OboInfo = () => {
                 </tr>
               </thead>
               <tbody className="text-2xl">
-                {oboBillingInfo &&
-                  oboBillingInfo.items &&
-                  oboBillingInfo.items.map(
+                {oboBill &&
+                  oboBill.items &&
+                  oboBill.items.map(
                     (item: ItemType["items"][0], index: number) => {
                       return (
                         <tr key={index} className="text-right">
@@ -96,9 +91,9 @@ const OboInfo = () => {
           <div className="flex justify-end">
             <div className="flex gap-x-8">
               <p className="text-3xl font-bold">Bill Amount</p>
-              {oboBillingInfo && oboBillingInfo.amount !== undefined && (
+              {oboBill && oboBill.amount !== undefined && (
                 <Currency
-                  amount={oboBillingInfo.amount}
+                  amount={oboBill.amount}
                   currency="Php"
                   classname="text-3xl"
                 />

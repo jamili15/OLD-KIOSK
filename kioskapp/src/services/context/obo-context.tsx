@@ -6,13 +6,13 @@ interface OboBillingContextProps {
 }
 
 interface OboBillingContext {
-  oboBillingInfo: any;
+  oboBill: any;
   payerName: string;
   payerAddress: string;
   code: string;
   section: string;
   ticketNo: string;
-  setOboBillingInfo: (data: any) => void;
+  setOboBill: (data: any) => void;
   setPayerName: (name: string) => void;
   setPayerAddress: (address: string) => void;
   setCode: (code: string) => void;
@@ -27,8 +27,7 @@ const OboBillingContext = createContext<OboBillingContext | undefined>(
 export const OboBillingProvider: React.FC<OboBillingContextProps> = ({
   children,
 }) => {
-  const [oboBillingInfo, setOboBillingInfo] = useState();
-
+  const [oboBill, setOboBill] = useState();
   const [payerName, setPayerName] = useState("");
   const [payerAddress, setPayerAddress] = useState("");
   const [code, setCode] = useState("");
@@ -38,13 +37,13 @@ export const OboBillingProvider: React.FC<OboBillingContextProps> = ({
   return (
     <OboBillingContext.Provider
       value={{
-        oboBillingInfo,
+        oboBill,
         payerName,
         code,
         section,
         ticketNo,
         payerAddress,
-        setOboBillingInfo,
+        setOboBill,
         setPayerName,
         setPayerAddress,
         setCode,

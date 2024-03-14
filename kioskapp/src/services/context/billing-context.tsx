@@ -6,15 +6,15 @@ interface BillingContextProps {
 }
 
 interface BillingContext {
-  billingInfo: any;
-  selectedOption: number | string | null;
+  bill: any;
+  qtr: number | string | null;
   payerName: string;
   payerAddress: string;
   code: string;
   section: string;
   ticketNo: string;
-  setBillingInfo: (data: any) => void;
-  setSelectedOption: (option: number | string | null) => void;
+  setBill: (data: any) => void;
+  setQtr: (option: number | string | null) => void;
   setPayerName: (name: string) => void;
   setPayerAddress: (address: string) => void;
   setCode: (code: string) => void;
@@ -27,10 +27,8 @@ const BillingContext = createContext<BillingContext | undefined>(undefined);
 export const BillingProvider: React.FC<BillingContextProps> = ({
   children,
 }) => {
-  const [billingInfo, setBillingInfo] = useState();
-  const [selectedOption, setSelectedOption] = useState<number | string | null>(
-    null
-  );
+  const [bill, setBill] = useState();
+  const [qtr, setQtr] = useState<number | string | null>(null);
   const [payerName, setPayerName] = useState("");
   const [payerAddress, setPayerAddress] = useState("");
   const [code, setCode] = useState("");
@@ -39,24 +37,24 @@ export const BillingProvider: React.FC<BillingContextProps> = ({
 
   const handleSetSelectedOption = (option: number | string | null) => {
     if (option === 1 || option === 2 || option === 3) {
-      setSelectedOption(`${option}`);
+      setQtr(`${option}`);
     } else {
-      setSelectedOption(option);
+      setQtr(option);
     }
   };
 
   return (
     <BillingContext.Provider
       value={{
-        billingInfo,
-        selectedOption,
+        bill,
+        qtr,
         payerName,
         code,
         section,
         payerAddress,
         ticketNo,
-        setBillingInfo,
-        setSelectedOption: handleSetSelectedOption,
+        setBill,
+        setQtr: handleSetSelectedOption,
         setPayerName,
         setPayerAddress,
         setCode,

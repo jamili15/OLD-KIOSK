@@ -82,7 +82,7 @@ const PaymentType = () => {
           img={{
             src: "/icons/galert.png",
             width: 150,
-            height: 0,
+            height: 200,
           }}
         />
       </div>

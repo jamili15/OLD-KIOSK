@@ -2,8 +2,6 @@
 import Button from "@/components/ui/Button";
 import Subtitle from "@/components/ui/Subtitle";
 import Title from "@/components/ui/Title";
-import { createFetch } from "@/libs/fetch";
-import { billingTicket } from "@/services/api/printticket";
 import { useBillingContext } from "@/services/context/billing-context";
 import { ticketInfo } from "@/stores/lgu-info";
 import Image from "next/image";
@@ -29,17 +27,16 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
   seriesno,
 }) => {
   const [isPrinting, setIsPrinting] = React.useState(false);
-  const { value, execute } = createFetch(billingTicket);
   const componentRef = useRef<any>();
-  const { billingInfo, payerName, payerAddress } = useBillingContext();
-  const combinedData = `${txntype}\n&paidby=${payerName}&paidbyaddress=${payerAddress}`;
+  const { bill, payerName, payerAddress, qtr } = useBillingContext();
+  const combinedData = `${txntype}&qtr=${qtr}&paidby=${payerName}&paidbyaddress=${payerAddress}`;
   const headers = [
     "trxn date",
     "payer",
     "address",
     "particulars",
-    "control no.",
     "total",
+    "control no.",
   ];
 
   // const handlePrint = () => {
@@ -74,9 +71,9 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
           ref={componentRef}
           QRCode={<QRCode value={combinedData} size={100} level="Q" />}
           addr={payerAddress}
-          total={billingInfo.amount.toLocaleString()}
+          total={bill.amount.toLocaleString()}
           QRData={combinedData}
-          appDate={billingInfo.appdate}
+          appDate={bill.info.appdate}
           payerName={payerName}
           seriesno={seriesno}
         />
@@ -170,16 +167,17 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                             <td className="text-start text-[15px] leading-6 font-semibold font-mono">
                               {
                                 [
-                                  billingInfo.appdate
-                                    ? `${billingInfo.appdate}`
+                                  bill.info.appdate
+                                    ? `${bill.info.appdate}`
                                     : "",
                                   `${payerName}`,
                                   payerAddress ? `${payerAddress}` : "",
-                                  "Business and Licensing",
-                                  combinedData ? `${combinedData}` : "",
-                                  billingInfo.amount
-                                    ? `${billingInfo.amount.toLocaleString()}`
+                                  "Business Billing and Payment",
+
+                                  bill.amount
+                                    ? `${bill.amount.toLocaleString()}`
                                     : "",
+                                  combinedData ? `${combinedData}` : "",
                                 ][index]
                               }
                             </td>

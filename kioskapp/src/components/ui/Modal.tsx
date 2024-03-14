@@ -2,7 +2,6 @@
 import React, { ReactNode } from "react";
 import { MdOutlineClose } from "react-icons/md";
 import Button from "./Button";
-import Images from "./Images";
 import Numbers from "./Number";
 import Subtitle from "./Subtitle";
 import Title from "./Title";
@@ -10,9 +9,6 @@ import Title from "./Title";
 interface ModalProps {
   isOpen: boolean;
   onClose?: () => void;
-  image?: string | undefined;
-  imageHeight?: number | undefined;
-  imageWidth?: number | undefined;
   subtitle?: string | undefined;
   queuetitle?: string | undefined;
   title?: string;
@@ -38,7 +34,6 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
-  image,
   subtitle,
   queuetitle,
   title,
@@ -46,8 +41,6 @@ const Modal: React.FC<ModalProps> = ({
   paragraph1,
   paragraph2,
   paragraph3,
-  imageHeight,
-  imageWidth,
   children,
   numberLayout,
   textButton,
@@ -79,7 +72,6 @@ const Modal: React.FC<ModalProps> = ({
         {children}
         <Title text={queuetitle || ""} textSize="text-[27px]" />
         <div>
-          <Images img={image || ""} alt={alt || ""} />
           <Title text={cityname || ""} />
           <Title text={seriesno || ""} />
           <Title text={date || ""} />

@@ -4,23 +4,19 @@ import Button from "@/components/ui/Button";
 import { useStepper } from "@/services/context/stepper-context";
 import Layout from "./layout";
 import { useTaxBillingContext } from "@/services/context/rpt-context";
-import { createFetch } from "@/libs/fetch";
-import { generateCode } from "@/services/api/rpt";
+import { lookupService } from "@/libs/client-service";
 
 const TaxBillingPage = () => {
   const { goToNextStep, goToPrevStep } = useStepper();
-  const { taxBillingInfo, setCode, setSection } = useTaxBillingContext();
-  const { execute } = createFetch(generateCode);
-
+  const { taxBill, setCode, setSection } = useTaxBillingContext();
+  const svc = lookupService("RptBillingService");
   const nextPage = async () => {
-    const response = await execute({
-      refno: taxBillingInfo.tdno,
+    const data = await svc?.invoke("generateCode", {
+      refno: taxBill.info.tdno,
       txntype: "rpt",
-      billtoyear: taxBillingInfo.billtoyear,
-      billtoqtr: taxBillingInfo.billtoqtr,
     });
-    setCode(response?.code);
-    setSection(response?.queuesection);
+    setCode(data.code);
+    setSection(data.queuesection);
     goToNextStep();
   };
 

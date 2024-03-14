@@ -1,12 +1,13 @@
 import Grid from "@/components/ui/Grid";
 import Icon from "@/components/ui/Icon";
+import useTimer from "@/hooks/useTimer";
 import { modules } from "@/stores/menu-items";
 import router from "next/router";
 import Layout from "./layout";
 
 const MenuPage = () => {
-  // const timeLimit = 15000;
-  // useTimer(timeLimit);
+  const timeLimit = 15000;
+  useTimer(timeLimit);
 
   return (
     <Layout>

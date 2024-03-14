@@ -23,8 +23,12 @@ export function isResponseSuccess(data: any): data is ResponseSuccess {
   return typeof data === "object" && "data" in data;
 }
 
-export function isResponseError(data: any): data is ResponseError {
-  return typeof data === "object" && "code" in data && "error" in data;
+export function isResponseError(param: any): param is ResponseError {
+  return (
+    typeof param.data === "object" &&
+    "code" in param.data &&
+    "error" in param.data
+  );
 }
 
 export function isResponseRedirect(data: any): data is ResponseRedirect {
@@ -287,14 +291,17 @@ const CreateAsyncInternal = (
 
     return func(params)
       .then((res: any) => {
-        if (isResponseError(res)) {
-          setError(res.error);
+        if (res.data && res.data.error) {
+          setError(res.data.error);
           setValue(undefined);
         } else {
           setValue(res.data);
           setError(undefined);
           return res.data;
         }
+      })
+      .catch((error: any) => {
+        setError(error.msg);
       })
       .finally(() => {
         setLoading(false);

@@ -33,7 +33,7 @@ const Alert: React.FC<AlertProps & { errorMessage: string }> = ({
               width={img?.width}
               height={img?.height}
               loading="eager"
-              style={{ width: img?.width, height: "auto" }}
+              style={{ width: img?.width, height: img?.height }}
             />
           </div>
           <Button buttonText={"OK"} onClick={onClose} />

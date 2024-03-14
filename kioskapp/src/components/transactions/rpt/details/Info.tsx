@@ -4,76 +4,53 @@ import Dropdown from "@/components/ui/Dropdown";
 import Input from "@/components/ui/Input";
 import Modal from "@/components/ui/Modal";
 import Title from "@/components/ui/Title";
-import { createFetch } from "@/libs/fetch";
-import { getBilling } from "@/services/api/rpt";
+import { lookupService } from "@/libs/client-service";
 import { useTaxBillingContext } from "@/services/context/rpt-context";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { loadBill } from "@/utils/rpt";
 
 const RptInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-  const { value, execute } = createFetch(getBilling);
   let options = [1, 2, 3, 4];
   let yearOptions = [2024, 2025, 2026, 2027];
-  const {
-    taxBillingInfo,
-    setTaxBillingInfo,
-    selectedOption,
-    selectedOptionYear,
-    setSelectedOptionYear,
-    setSelectedOption,
-  } = useTaxBillingContext();
+  const { taxBill, setTaxBill, setBillToQtr, setBillToYear } =
+    useTaxBillingContext();
+  const svc = lookupService("RptBillingService");
 
-  useEffect(() => {
-    if (value && value.info) {
-      setTaxBillingInfo(value.info);
-    }
-  }, [
-    selectedOption,
-    selectedOptionYear,
-    taxBillingInfo,
-    value,
-    setTaxBillingInfo,
-  ]);
+  const handlePayOptionChange = async (billtoqtr: number | string) => {
+    setBillToQtr(billtoqtr);
 
-  const handlePayOptionChange = (billtoqtr: number | string) => {
-    setSelectedOption(billtoqtr);
-    try {
-      execute({
-        refno: taxBillingInfo?.tdno,
-        showdetails: true,
-        billtoyear: taxBillingInfo?.billtoyear,
-        billtoqtr: billtoqtr,
-      });
-    } catch (error) {
-      console.error("Error fetching billing data:", error);
-    }
+    const data = await loadBill(svc, {
+      refno: taxBill?.info?.tdno,
+      billtoyear: taxBill?.info?.billtoyear,
+      billtoqtr: billtoqtr,
+    });
+    setTaxBill(data);
   };
-  const handlePayYearChange = (billtoyear: number | string) => {
-    setSelectedOptionYear(billtoyear);
-    try {
-      execute({
-        refno: taxBillingInfo?.tdno,
-        showdetails: true,
-        billtoqtr: taxBillingInfo?.billtoqtr,
-        billtoyear: billtoyear,
-      });
-    } catch (error) {
-      console.error("Error fetching billing data:", error);
-    }
+
+  const handlePayYearChange = async (billtoyear: number | string) => {
+    setBillToYear(billtoyear);
+
+    const data = await loadBill(svc, {
+      refno: taxBill?.info?.tdno,
+      billtoqtr: taxBill?.info?.billtoqtr,
+      billtoyear: billtoyear,
+    });
+    setTaxBill(data);
   };
 
   const inputConfigs = [
-    { caption: taxBillingInfo?.billno || "N/A", label: "Bill No." },
-    { caption: taxBillingInfo?.billdate || "N/A", label: "Bill Date" },
-    { caption: taxBillingInfo?.tdno || "N/A", label: "TD No." },
-    { caption: taxBillingInfo?.fullpin || "N/A", label: "PIN" },
-    { caption: taxBillingInfo?.owner?.name || "N/A", label: "Property Owner" },
-    { caption: taxBillingInfo?.taxpayer?.address || "N/A", label: "Address" },
-    { caption: taxBillingInfo?.billperiod || "N/A", label: "Billing Period" },
+    { caption: taxBill?.info?.billno || "N/A", label: "Bill No." },
+    { caption: taxBill?.info?.billdate || "N/A", label: "Bill Date" },
+    { caption: taxBill?.info?.tdno || "N/A", label: "TD No." },
+    { caption: taxBill?.info?.fullpin || "N/A", label: "PIN" },
+    { caption: taxBill?.info?.owner?.name || "N/A", label: "Property Owner" },
+    { caption: taxBill?.info?.taxpayer?.address || "N/A", label: "Address" },
+    { caption: taxBill?.info?.billperiod || "N/A", label: "Billing Period" },
     {
-      caption: <Currency amount={taxBillingInfo?.amount || 0} currency="Php" />,
+      caption: <Currency amount={taxBill?.info?.amount || 0} currency="Php" />,
       label: "Amount Due",
     },
   ];
@@ -95,7 +72,7 @@ const RptInfo = () => {
             />
           ))}
         </div>
-        {taxBillingInfo && (
+        {taxBill && (
           <>
             <div>
               <Button
@@ -107,7 +84,7 @@ const RptInfo = () => {
           </>
         )}
       </div>
-      {taxBillingInfo && (
+      {taxBill && (
         <Modal
           isOpen={isModalOpen}
           onClose={closeModal}

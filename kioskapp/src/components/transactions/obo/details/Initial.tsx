@@ -4,27 +4,23 @@ import Alert from "@/components/layout/Alert";
 import Button from "@/components/ui/Button";
 import Textbox from "@/components/ui/Textbox";
 import Title from "@/components/ui/Title";
-import { createFetch } from "@/libs/fetch";
-import { getBilling } from "@/services/api/obo";
 import { useOboBillingContext } from "@/services/context/obo-context";
 import { useStepper } from "@/services/context/stepper-context";
-import { validateObo } from "@/utils/validation";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Layout from "./Layout";
+import { lookupService } from "@/libs/client-service";
+import { loadBill } from "@/utils/obo";
+import { sleep } from "@/utils/helper";
+import { Loading } from "@/components/layout/Loading";
 
 const OboInitial = () => {
-  const { currentStep, goToNextStep, goToPrevStep } = useStepper();
-  const { value, execute } = createFetch(getBilling);
+  const { goToNextStep, goToPrevStep } = useStepper();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const { oboBillingInfo, setOboBillingInfo } = useOboBillingContext();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { setOboBill } = useOboBillingContext();
   const appno = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (value) {
-      setOboBillingInfo(value.info);
-    }
-  }, [value, oboBillingInfo, setOboBillingInfo]);
+  const svc = lookupService("OboBillingService");
 
   const openAlert = (message: any) => {
     setErrorMessage(message);
@@ -35,16 +31,31 @@ const OboInitial = () => {
     setIsAlertOpen(false);
   };
 
-  const nextPage = async () => {
+  const validInfo = async () => {
     const refno = appno?.current?.value?.trim();
-    await validateObo(
-      currentStep,
-      refno,
-      execute,
-      setOboBillingInfo,
-      goToNextStep,
-      openAlert
-    );
+    if (!refno) {
+      openAlert("Enter OSCP Number");
+      return false;
+    } else {
+      setIsProcessing(true);
+      const data = await loadBill(svc, {
+        refno,
+      });
+      if (!data) {
+        openAlert("OSCP number does not exist");
+        setIsProcessing(true);
+        return false;
+      } else {
+        await sleep(2);
+        setOboBill(data);
+        goToNextStep();
+        return true;
+      }
+    }
+  };
+
+  const nextPage = async () => {
+    if (!validInfo()) return;
   };
 
   return (
@@ -59,6 +70,7 @@ const OboInitial = () => {
         className="border-2 !text-4xl border-gray-400 w-full"
         ref={appno}
       />
+      {isProcessing && <Loading />}
       <Keyboard />
       <ActionBar>
         <Button
@@ -81,7 +93,7 @@ const OboInitial = () => {
         img={{
           src: "/icons/alert.png",
           width: 200,
-          height: 0,
+          height: 200,
         }}
       />
     </Layout>

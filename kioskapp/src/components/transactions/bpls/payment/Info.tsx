@@ -3,8 +3,7 @@ import Alert from "@/components/layout/Alert";
 import Button from "@/components/ui/Button";
 import Currency from "@/components/ui/Currency";
 import Textbox from "@/components/ui/Textbox";
-import { createFetch } from "@/libs/fetch";
-import { fetchNextSeries } from "@/services/api/queue";
+import { lookupService } from "@/libs/client-service";
 import { useBillingContext } from "@/services/context/billing-context";
 import { useStepper } from "@/services/context/stepper-context";
 import { useRef, useState } from "react";
@@ -17,9 +16,9 @@ const PaymentInformation = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const payerNameInput = useRef<HTMLInputElement>(null);
   const payerAddressInput = useRef<HTMLInputElement>(null);
-  const { billingInfo, setPayerName, setPayerAddress, section, setTicketNo } =
+  const { bill, setPayerName, setPayerAddress, section, setTicketNo } =
     useBillingContext();
-  const { execute } = createFetch(fetchNextSeries);
+  const svc = lookupService("BplsBillingService");
 
   const openAlert = (message: any) => {
     setErrorMessage(message);
@@ -37,10 +36,10 @@ const PaymentInformation = () => {
       if (address !== "" && address !== null && address !== undefined) {
         setPayerName(name);
         setPayerAddress(address);
-        const response = await execute({
+        const data = await svc?.invoke("fetchNextSeries", {
           sectionid: section,
         });
-        setTicketNo(response?.ticketno);
+        setTicketNo(data.ticketno);
         goToNextStep();
       } else {
         openAlert("Enter payer address");
@@ -61,7 +60,7 @@ const PaymentInformation = () => {
           classname="text-[25px] leading-normal p-5"
         />
       </div>
-      <div className="flex flex-col gap-4 text-[28px]">
+      <div className="flex flex-col gap-8 text-[28px]">
         <Textbox
           label="Payer Name"
           labelStyle="!p-1"
@@ -78,9 +77,9 @@ const PaymentInformation = () => {
       <div className="m-2 text-center flex justify-center items-center flex-col gap-4 pt-10">
         <Subtitle text={"Payment Details"} />
         <div className="border border-black font-bold w-[70%] p-8">
-          {billingInfo && billingInfo.amount !== undefined && (
+          {bill && bill.amount !== undefined && (
             <Currency
-              amount={billingInfo.amount}
+              amount={bill.amount}
               currency="Php"
               classname="text-3xl"
             />
@@ -107,7 +106,7 @@ const PaymentInformation = () => {
           img={{
             src: "/icons/alert.png",
             width: 200,
-            height: 0,
+            height: 200,
           }}
         />
       </div>

@@ -18,7 +18,7 @@ export const ticketInfo = [
   {
     logo: {
       src: "/_custom/lgu-logo.jpg",
-      width: 70,
+      width: 80,
     },
     header: {
       title: "Republic of the Philippines",
@@ -33,7 +33,8 @@ export const landingBgLogo = [
   {
     logo: {
       src: "/_custom/lp-bg-image.png",
-      width: 2000,
+      width: 1000,
+      height: 1000,
     },
   },
 ];

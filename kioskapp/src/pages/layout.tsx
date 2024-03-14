@@ -26,7 +26,7 @@ const Layout: React.FC<LayoutProps> = ({ children, classname }) => {
             src={item.logo.src}
             alt={""}
             width={item.logo.width}
-            height={0}
+            height={item.logo.height}
             style={{
               content: '""',
               position: "absolute",
@@ -35,7 +35,10 @@ const Layout: React.FC<LayoutProps> = ({ children, classname }) => {
               left: 0,
               opacity: 0.4,
               zIndex: -1,
+              width: item.logo.width,
+              height: item.logo.height,
             }}
+            loading="eager"
             priority
             unoptimized
           />

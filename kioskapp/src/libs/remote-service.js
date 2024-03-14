@@ -6,7 +6,7 @@ const CHANNEL = "/gdx";
 
 const gdxConnection = connections["gdx"];
 
-console.log("gdxConnection", gdxConnection);
+// console.log("gdxConnection", gdxConnection);
 
 const CONNECTION_TIMEOUT = gdxConnection["readTimeout"]
   ? +gdxConnection["readTimeout"]

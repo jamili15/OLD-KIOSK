@@ -60,7 +60,7 @@ const getService = (serviceName, action, connName) => {
   url += "/" + serviceName;
   url += "." + action;
 
-  console.log("Service.url:", url);
+  // console.log("Service.url:", url);
 
   const invoke = async (args) => {
     let resolvedArgs;

@@ -8,24 +8,25 @@ export const validateBin = async (
   openAlert
 ) => {
   if (currentStep === 1) {
-    if (navigator.onLine) {
-      if (!refno) {
-        openAlert("Enter BIN Number");
+    if (!refno) {
+      openAlert("Enter BIN Number");
+      return false;
+    }
+
+    try {
+      const showdetails = true;
+      const response = await execute({ refno, showdetails });
+
+      if (!response || !response.info) {
+        openAlert("BIN number does not exist");
         return false;
       } else {
-        const showdetails = true;
-        const response = await execute({ refno, showdetails });
-        if (!response || !response.info) {
-          openAlert("BIN number does not exist");
-          return false;
-        } else {
-          setBillingInfo(response.info);
-          goToNextStep();
-          return true;
-        }
+        setBillingInfo(response.info);
+        goToNextStep();
+        return true;
       }
-    } else {
-      openAlert("No internet connection. Please check your network settings.");
+    } catch (error) {
+      openAlert("An error occurred while fetching data. Please try again.");
       return false;
     }
   }

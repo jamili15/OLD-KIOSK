@@ -4,10 +4,10 @@ import Dropdown from "@/components/ui/Dropdown";
 import Grid from "@/components/ui/Grid";
 import Modal from "@/components/ui/Modal";
 import Title from "@/components/ui/Title";
-import { createFetch } from "@/libs/fetch";
-import { getBilling } from "@/services/api/bpls";
+import { lookupService } from "@/libs/client-service";
 import { useBillingContext } from "@/services/context/billing-context";
-import { useEffect, useState } from "react";
+import { loadBill } from "@/utils/bpls";
+import { useState } from "react";
 
 interface ItemType {
   lobname: string;
@@ -23,29 +23,19 @@ const BplsInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-  const { value, execute } = createFetch(getBilling);
   const headers = ["Particulars", "Amount", "Surcharge", "Interest", "Total"];
   let options = [1, 2, 3, 4];
-  const { billingInfo, setBillingInfo, selectedOption, setSelectedOption } =
-    useBillingContext();
+  const { bill, setBill, qtr, setQtr } = useBillingContext();
+  const svc = lookupService("BplsBillingService");
 
-  useEffect(() => {
-    if (value && value.info) {
-      setBillingInfo(value.info);
-    }
-  }, [selectedOption, billingInfo, value, setBillingInfo]);
-
-  const handlePayOptionChange = (qtr: number | string) => {
-    setSelectedOption(qtr);
+  const handlePayOptionChange = async (qtr: number | string) => {
+    setQtr(qtr);
     setIsModalOpen(false);
-    execute({
-      refno: billingInfo?.bin,
-      showdetails: true,
-      qtr: qtr,
-    });
+    const data = await loadBill(svc, { refno: bill.info.bin, qtr: qtr });
+    setBill(data);
   };
 
-  const renderBillingInfo = () => (
+  const renderbill = () => (
     <div className="flex justify-start w-full !text-[20px]">
       <Grid columns="grid-rows-7 gap-2 font-bold indent-12 w-full">
         {[
@@ -63,22 +53,22 @@ const BplsInfo = () => {
           </p>
         ))}
       </Grid>
-      {billingInfo && (
+      {bill && bill.info && (
         <Grid columns="grid-rows-7 gap-2 font-semibold w-full">
           {[
-            billingInfo.appno,
-            billingInfo.apptype,
-            billingInfo.appdate,
-            billingInfo.bin,
-            billingInfo.tradename,
-            billingInfo.ownername,
-            billingInfo.address,
+            bill.info.appno,
+            bill.info.apptype,
+            bill.info.appdate,
+            bill.info.bin,
+            bill.info.tradename,
+            bill.info.ownername,
+            bill.info.address,
             `${
-              selectedOption === "1"
+              qtr === "1"
                 ? "1st"
-                : selectedOption === "2"
+                : qtr === "2"
                 ? "2nd"
-                : selectedOption === "3"
+                : qtr === "3"
                 ? "3rd"
                 : "4th"
             } Quarter`,
@@ -108,14 +98,13 @@ const BplsInfo = () => {
           </tr>
         </thead>
         <tbody className="text-2xl">
-          {billingInfo &&
-            billingInfo.items &&
-            billingInfo.items.map((item: ItemType, index: number) => {
+          {bill &&
+            bill.info &&
+            bill.info.items &&
+            bill.info.items.map((item: ItemType, index: number) => {
               let particulars = `${item.lobname} - ${item.account}`;
-              if (item.lobname === null || item.lobname === "") {
+              if (!item.lobname || item.lobname === "") {
                 particulars = item.account;
-              } else {
-                particulars;
               }
               return (
                 <tr key={index} className="text-right">
@@ -147,7 +136,7 @@ const BplsInfo = () => {
         classname="text-green-500"
         textSize="text-4xl"
       />
-      <div>{renderBillingInfo()}</div>
+      <div>{renderbill()}</div>
       <div>
         <Button
           buttonText={"Pay Option"}
@@ -160,16 +149,16 @@ const BplsInfo = () => {
       <div className="flex justify-end">
         <div className="flex gap-x-8">
           <p className="text-3xl font-bold">Bill Amount</p>
-          {billingInfo && billingInfo.amount !== undefined && (
+          {bill && bill.amount !== undefined && (
             <Currency
-              amount={billingInfo.amount}
+              amount={bill.amount}
               currency="Php"
               classname="text-3xl"
             />
           )}
         </div>
       </div>
-      {billingInfo && (
+      {bill && (
         <Modal
           isOpen={isModalOpen}
           onClose={closeModal}

@@ -1,10 +1,10 @@
 import fs from "fs";
 import path from "path";
 
-console.log("\n\n==============================");
-console.log("KIOSK_PRINT_SEVER_IP", process.env.KIOSK_PRINT_SEVER_IP);
-console.log("process.cwd()", process.cwd());
-console.log("==============================");
+// console.log("\n\n==============================");
+// console.log("KIOSK_PRINT_SEVER_IP", process.env.KIOSK_PRINT_SEVER_IP);
+// console.log("process.cwd()", process.cwd());
+// console.log("==============================");
 
 const connFilePath = path.join(process.cwd(), "connections.json");
 const connJson = fs.readFileSync(connFilePath, "utf-8");
@@ -30,8 +30,8 @@ for (let key in connections) {
   }
 }
 
-console.log("\n\nCONNECTIONS==================");
-console.log(connections);
-console.log("\n\nCONNECTIONS==================");
+// console.log("\n\nCONNECTIONS==================");
+// console.log(connections);
+// console.log("\n\nCONNECTIONS==================");
 
 export default connections;

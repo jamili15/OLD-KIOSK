@@ -9,6 +9,7 @@ interface ButtonProps {
   classname?: string;
   children?: ReactNode;
   animation?: "normal" | "shrink";
+  disabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -18,6 +19,7 @@ const Button: React.FC<ButtonProps> = ({
   classname,
   children,
   animation = "normal",
+  disabled,
 }) => {
   const { isShrunk, handleShrink } = useShrink();
   const defaultClass = "text-2xl px-20 py-4 rounded-lg border border-gray-400";
@@ -39,6 +41,7 @@ const Button: React.FC<ButtonProps> = ({
         }
       : {}),
     ...(href ? { href } : {}),
+    ...(disabled ? { disabled } : {}),
   };
 
   if (onClick) {

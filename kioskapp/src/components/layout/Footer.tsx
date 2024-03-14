@@ -8,10 +8,10 @@ const Footer: React.FC = () => {
         <Image
           src="/images/etracs-logo.png"
           alt="Logo"
-          width={150}
-          height={0}
+          width={160}
+          height={60}
           loading="eager"
-          style={{ width: 150, height: 50 }}
+          style={{ width: 160, height: 60 }}
         />
       </div>
     </footer>
@@ -19,5 +19,3 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
-
-//shadow-[0px_17px_25px_-10px_rgba(0,0,0,0.4)]

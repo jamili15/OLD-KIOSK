@@ -4,32 +4,23 @@ import Alert from "@/components/layout/Alert";
 import Button from "@/components/ui/Button";
 import Textbox from "@/components/ui/Textbox";
 import Title from "@/components/ui/Title";
-import { createFetch } from "@/libs/fetch";
-import { getBilling } from "@/services/api/rpt";
+import { lookupService } from "@/libs/client-service";
 import { useTaxBillingContext } from "@/services/context/rpt-context";
 import { useStepper } from "@/services/context/stepper-context";
-import { validateRpt } from "@/utils/validation";
-import { useEffect, useRef, useState } from "react";
+import { sleep } from "@/utils/helper";
+import { loadBill } from "@/utils/rpt";
+import { useRef, useState } from "react";
 import Layout from "./Layout";
+import { Loading } from "@/components/layout/Loading";
 
 const RptInitial = () => {
-  const { currentStep, goToNextStep, goToPrevStep } = useStepper();
-  const { value, execute } = createFetch(getBilling);
+  const { goToNextStep, goToPrevStep } = useStepper();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const {
-    taxBillingInfo,
-    setTaxBillingInfo,
-    setSelectedOption,
-    setSelectedOptionYear,
-  } = useTaxBillingContext();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { setTaxBill, setBillToQtr, setBillToYear } = useTaxBillingContext();
   const tdno = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (value) {
-      setTaxBillingInfo(value.info);
-    }
-  }, [value, taxBillingInfo, setTaxBillingInfo]);
+  const svc = lookupService("RptBillingService");
 
   const openAlert = (message: any) => {
     setErrorMessage(message);
@@ -40,18 +31,33 @@ const RptInitial = () => {
     setIsAlertOpen(false);
   };
 
-  const nextPage = async () => {
+  const validInfo = async () => {
     const refno = tdno?.current?.value?.trim();
-    await validateRpt(
-      currentStep,
-      refno,
-      execute,
-      setTaxBillingInfo,
-      goToNextStep,
-      openAlert
-    );
-    setSelectedOption(4);
-    setSelectedOptionYear(2024);
+    if (!refno) {
+      openAlert("Enter Tax Number");
+      return false;
+    } else {
+      setIsProcessing(true);
+      const data = await loadBill(svc, {
+        refno,
+        billtoqtr: setBillToQtr(4),
+        billtoyear: setBillToYear(2024),
+      });
+      if (!data) {
+        openAlert("Tax number does not exist");
+        setIsProcessing(false);
+        return false;
+      } else {
+        await sleep(2);
+        setTaxBill(data);
+        goToNextStep();
+        return true;
+      }
+    }
+  };
+
+  const nextPage = async () => {
+    if (!validInfo()) return;
   };
 
   return (
@@ -65,6 +71,7 @@ const RptInitial = () => {
         className="border-2 border-gray-400 w-full"
         ref={tdno}
       />
+      {isProcessing && <Loading />}
       <Keyboard />
       <ActionBar>
         <Button
@@ -87,7 +94,7 @@ const RptInitial = () => {
         img={{
           src: "/icons/alert.png",
           width: 200,
-          height: 0,
+          height: 200,
         }}
       />
     </Layout>
