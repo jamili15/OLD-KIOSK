@@ -36,7 +36,7 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
     "address",
     "particulars",
     "total",
-    "control no.",
+    "bin no",
   ];
 
   // const handlePrint = () => {
@@ -69,10 +69,10 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
       <div className="hidden">
         <PaymentTicketPrint
           ref={componentRef}
-          QRCode={<QRCode value={combinedData} size={100} level="Q" />}
+          QRCode={<QRCode value={combinedData} size={80} />}
           addr={payerAddress}
           total={bill.amount.toLocaleString()}
-          QRData={combinedData}
+          binNo={bill.info.bin}
           appDate={bill.info.appdate}
           payerName={payerName}
           seriesno={seriesno}
@@ -139,7 +139,6 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                     </div>
                   </div>
                 ))}
-
                 <div className="flex gap-x-10 justify-center">
                   <div className="relative">
                     <QRCode value={combinedData} size={90} />
@@ -156,11 +155,11 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                     classname="uppercase"
                     textSize="text-xl"
                   />
-                  <div className="flex justify-center">
+                  <div className="pl-6">
                     <table>
                       <tbody>
                         {headers.map((label, index) => (
-                          <tr key={index}>
+                          <tr key={index} className="flex gap-x-20">
                             <td className="text-start text-[15px] leading-6 capitalize w-24">
                               {label}
                             </td>
@@ -177,7 +176,7 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                                   bill.amount
                                     ? `${bill.amount.toLocaleString()}`
                                     : "",
-                                  combinedData ? `${combinedData}` : "",
+                                  combinedData ? `${bill.info.bin}` : "",
                                 ][index]
                               }
                             </td>

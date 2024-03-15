@@ -38,7 +38,7 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
     "address",
     "particulars",
     "total",
-    "control no.",
+    "tax no",
   ];
 
   const handlePrint = useReactToPrint({
@@ -57,11 +57,11 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
       <div className="hidden">
         <PaymentTicketPrint
           ref={componentRef}
-          QRCode={<QRCode value={combinedData} size={100} />}
+          QRCode={<QRCode value={combinedData} size={80} />}
           addr={payerAddress}
           appDate={taxBill.info?.billdate}
           total={<Currency amount={taxBill.amount} />}
-          QRData={combinedData}
+          tdNo={taxBill.info.tdno}
           payerName={payerName}
           seriesno={seriesno}
         />
@@ -129,11 +129,7 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                 ))}
                 <div className="flex gap-x-10 justify-center">
                   <div className="relative">
-                    <QRCode
-                      className="break-words"
-                      value={combinedData}
-                      size={90}
-                    />
+                    <QRCode value={combinedData} size={90} />
                   </div>
                   <div className="w-[2px] bg-black"></div>
                   <div className="uppercase">
@@ -147,15 +143,15 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                     classname="uppercase"
                     textSize="text-xl"
                   />
-                  <div className="flex justify-center gap-12">
+                  <div className="pl-6">
                     <table>
                       <tbody>
                         {headers.map((label, index) => (
-                          <tr key={index}>
-                            <td className="text-start text-[15px] leading-6 capitalize">
+                          <tr key={index} className="flex gap-x-20">
+                            <td className="text-start text-[15px] leading-6 capitalize w-24">
                               {label}
                             </td>
-                            <td className="text-start text-[15px] leading-6 font-semibold">
+                            <td className="text-start text-[15px] leading-6 font-semibold font-mono">
                               {
                                 [
                                   taxBill.info?.billdate
@@ -169,7 +165,7 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                                     amount={taxBill.amount}
                                     currency="Php"
                                   />,
-                                  combinedData ? ` ${combinedData}` : "",
+                                  combinedData ? ` ${taxBill.info.tdno}` : "",
                                 ][index]
                               }
                             </td>
