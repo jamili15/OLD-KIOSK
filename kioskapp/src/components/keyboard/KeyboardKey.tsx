@@ -55,6 +55,8 @@ const KeyboardKey: React.FC<KeyboardKeyProps> = ({
           height={0}
           loading="eager"
           style={{ width: "65%", height: "45%" }}
+          unoptimized
+          priority
         />
       );
     } else if (value === "SpaceBar") {
