@@ -43,7 +43,7 @@ const OboInitial = () => {
       });
       if (!data) {
         openAlert("OSCP number does not exist");
-        setIsProcessing(true);
+        setIsProcessing(false);
         return false;
       } else {
         await sleep(2);
