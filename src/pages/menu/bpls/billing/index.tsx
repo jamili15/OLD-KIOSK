@@ -1,9 +1,9 @@
 import BplsInitial from "@/components/transactions/bpls/details/Initial";
+import useTimer from "@/hooks/useTimer";
 import { useStepper } from "@/services/context/stepper-context";
 import BillingPage from "./details";
 import PaymentPage from "./paymentdetails";
 import PaymentTypePage from "./paymenttypepage";
-import useTimer from "@/hooks/useTimer";
 
 const Index = () => {
   const { currentStep } = useStepper();

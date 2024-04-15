@@ -103,8 +103,10 @@ const BplsInfo = () => {
             bill.info.items &&
             bill.info.items.map((item: ItemType, index: number) => {
               let particulars = `${item.lobname} - ${item.account}`;
-              if (!item.lobname || item.lobname === "") {
+              if (item.lobname === null || item.lobname === "") {
                 particulars = item.account;
+              } else {
+                particulars;
               }
               return (
                 <tr key={index} className="text-right">

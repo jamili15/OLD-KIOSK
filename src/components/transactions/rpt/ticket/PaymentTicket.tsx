@@ -1,15 +1,17 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Button from "@/components/ui/Button";
 import Currency from "@/components/ui/Currency";
+import CurrentDate from "@/components/ui/Date";
 import Subtitle from "@/components/ui/Subtitle";
 import Title from "@/components/ui/Title";
+import { createFetch } from "@/libs/fetch";
+import { printTicket } from "@/services/api/printticket";
 import { useTaxBillingContext } from "@/services/context/rpt-context";
 import { ticketInfo } from "@/stores/lgu-info";
 import Image from "next/image";
 import React, { useRef } from "react";
 import { MdOutlineClose } from "react-icons/md";
 import QRCode from "react-qr-code";
-import { useReactToPrint } from "react-to-print";
 import PaymentTicketPrint from "./PaymentTicketPrint";
 
 interface PaymentTicketProps {
@@ -29,6 +31,7 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
 }) => {
   const [isPrinting, setIsPrinting] = React.useState(false);
   const componentRef = useRef<any>();
+  const { execute } = createFetch(printTicket);
   const { taxBill, billToQtr, billToYear, payerName, payerAddress } =
     useTaxBillingContext();
   const combinedData = `${rpttxntype}&billtoqtr=${billToQtr}&billtoyear=${billToYear}&paidby=${payerName}&paidbyaddress=${payerAddress}`;
@@ -41,16 +44,30 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
     "tax no",
   ];
 
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    onBeforeGetContent: () => {
-      setIsPrinting(true);
-    },
-    onAfterPrint: () => {
-      setIsPrinting(false);
-      onClose && onClose();
-    },
-  });
+  const handlePrint = () => {
+    const sendTicketInfo = {
+      appDate: <CurrentDate />,
+      payerName: payerName,
+      payerAddr: payerAddress,
+      particulars: "Real Tax Billing And Payment",
+      controlNo: taxBill.info.bin,
+      totalAmt: taxBill.info.amount,
+      seriesNo: seriesno,
+      qrImage: combinedData,
+    };
+    execute(sendTicketInfo);
+  };
+
+  // const handlePrint = useReactToPrint({
+  //   content: () => componentRef.current,
+  //   onBeforeGetContent: () => {
+  //     setIsPrinting(true);
+  //   },
+  //   onAfterPrint: () => {
+  //     setIsPrinting(false);
+  //     onClose && onClose();
+  //   },
+  // });
 
   return (
     <>
@@ -129,7 +146,11 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                 ))}
                 <div className="flex gap-x-10 justify-center">
                   <div className="relative">
-                    <QRCode value={combinedData} size={90} />
+                    <QRCode
+                      className="break-words"
+                      value={combinedData}
+                      size={90}
+                    />
                   </div>
                   <div className="w-[2px] bg-black"></div>
                   <div className="uppercase">
@@ -151,12 +172,10 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                             <td className="text-start text-[15px] leading-6 capitalize w-24">
                               {label}
                             </td>
-                            <td className="text-start text-[15px] leading-6 font-semibold font-mono">
+                            <td className="text-start text-[15px] leading-6 font-semibold">
                               {
                                 [
-                                  taxBill.info?.billdate
-                                    ? ` ${taxBill.info?.billdate}`
-                                    : "",
+                                  taxBill.info?.billdate ? <CurrentDate /> : "",
                                   ` ${payerName}`,
                                   payerAddress ? ` ${payerAddress}` : "",
                                   " Real Tax Billing and Payment",
@@ -165,7 +184,9 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                                     amount={taxBill.amount}
                                     currency="Php"
                                   />,
-                                  combinedData ? ` ${taxBill.info.tdno}` : "",
+                                  taxBill.info?.tdno
+                                    ? ` ${taxBill.info?.tdno}`
+                                    : "",
                                 ][index]
                               }
                             </td>

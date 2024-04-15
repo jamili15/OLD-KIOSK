@@ -25,8 +25,8 @@ const Layout: React.FC<LayoutProps> = ({ children, classname }) => {
           <Image
             src={item.logo.src}
             alt={""}
-            width={item.logo.width}
-            height={item.logo.height}
+            width={0}
+            height={0}
             style={{
               content: '""',
               position: "absolute",
@@ -35,8 +35,8 @@ const Layout: React.FC<LayoutProps> = ({ children, classname }) => {
               left: 0,
               opacity: 0.4,
               zIndex: -1,
-              width: item.logo.width,
-              height: item.logo.height,
+              width: 1000,
+              height: 1000,
             }}
             loading="eager"
             priority

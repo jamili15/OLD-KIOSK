@@ -3,6 +3,8 @@ import Button from "@/components/ui/Button";
 import Currency from "@/components/ui/Currency";
 import Subtitle from "@/components/ui/Subtitle";
 import Title from "@/components/ui/Title";
+import { createFetch } from "@/libs/fetch";
+import { printTicket } from "@/services/api/printticket";
 import { useOboBillingContext } from "@/services/context/obo-context";
 import { ticketInfo } from "@/stores/lgu-info";
 import Image from "next/image";
@@ -29,9 +31,24 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
 }) => {
   const [isPrinting, setIsPrinting] = React.useState(false);
   const componentRef = useRef<any>();
+  const { execute } = createFetch(printTicket);
   const { oboBill, payerName, payerAddress } = useOboBillingContext();
   const combinedData = `${obotxntype}\n&paidby=${payerName}&paidbyaddress=${payerAddress}`;
   const headers = ["payer", "address", "particulars", "total", "oscp no"];
+
+  // const handlePrint = () => {
+  //   const sendTicketInfo = {
+  //     appDate: <CurrentDate />,
+  //     payerName: payerName,
+  //     payerAddr: payerAddress,
+  //     particulars: "OSCP Billing And Payment",
+  //     controlNo: oboBill.info.bin,
+  //     totalAmt: oboBill.info.amount,
+  //     seriesNo: seriesno,
+  //     qrImage: combinedData,
+  //   };
+  //   execute(sendTicketInfo);
+  // };
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -120,11 +137,7 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                 ))}
                 <div className="flex gap-x-10 justify-center">
                   <div className="relative">
-                    <QRCode
-                      className="break-words"
-                      value={combinedData}
-                      size={90}
-                    />
+                    <QRCode value={combinedData} size={90} />
                   </div>
                   <div className="w-[2px] bg-black"></div>
                   <div className="uppercase">
@@ -146,7 +159,7 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                             <td className="text-start text-[15px] leading-6 capitalize w-24">
                               {label}
                             </td>
-                            <td className="text-start text-[15px] leading-6 font-semibold font-mono">
+                            <td className="text-start text-[15px] leading-6 font-semibold  font-mono">
                               {
                                 [
                                   ` ${payerName}`,
@@ -157,7 +170,7 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                                     amount={oboBill.amount}
                                     currency="Php"
                                   />,
-                                  combinedData ? ` ${oboBill.appno}` : "",
+                                  oboBill.appno ? ` ${oboBill.appno}` : "",
                                 ][index]
                               }
                             </td>

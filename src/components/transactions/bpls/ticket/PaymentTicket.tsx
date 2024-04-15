@@ -1,7 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Button from "@/components/ui/Button";
+import CurrentDate from "@/components/ui/Date";
 import Subtitle from "@/components/ui/Subtitle";
 import Title from "@/components/ui/Title";
+import { createFetch } from "@/libs/fetch";
+import { printTicket } from "@/services/api/printticket";
 import { useBillingContext } from "@/services/context/billing-context";
 import { ticketInfo } from "@/stores/lgu-info";
 import Image from "next/image";
@@ -28,6 +31,7 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
 }) => {
   const [isPrinting, setIsPrinting] = React.useState(false);
   const componentRef = useRef<any>();
+  const { execute } = createFetch(printTicket);
   const { bill, payerName, payerAddress, qtr } = useBillingContext();
   const combinedData = `${txntype}&qtr=${qtr}&paidby=${payerName}&paidbyaddress=${payerAddress}`;
   const headers = [
@@ -38,15 +42,14 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
     "total",
     "bin no",
   ];
-
   // const handlePrint = () => {
   //   const sendTicketInfo = {
-  //     appDate: billingInfo.appdate,
+  //     appDate: <CurrentDate />,
   //     payerName: payerName,
   //     payerAddr: payerAddress,
   //     particulars: "Business Billing and Payment",
-  //     controlNo: combinedData,
-  //     totalAmt: billingInfo.amount,
+  //     controlNo: bill.info.bin,
+  //     totalAmt: bill.info.amount,
   //     seriesNo: seriesno,
   //     qrImage: combinedData,
   //   };
@@ -66,7 +69,7 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
 
   return (
     <>
-      <div className="hidden">
+      <div className="absolute top-0 left-0 bg-green-500 hidden">
         <PaymentTicketPrint
           ref={componentRef}
           QRCode={<QRCode value={combinedData} size={80} />}
@@ -122,9 +125,15 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                       <Image
                         src={item.logo.src}
                         alt={""}
-                        width={item.logo.width}
+                        width={0}
                         height={0}
                         loading="eager"
+                        priority
+                        unoptimized
+                        style={{
+                          width: item.logo.width,
+                          height: item.logo.height,
+                        }}
                       />
                       <div className="flex flex-col justify-center mx-4">
                         <Title
@@ -139,6 +148,7 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                     </div>
                   </div>
                 ))}
+
                 <div className="flex gap-x-10 justify-center">
                   <div className="relative">
                     <QRCode value={combinedData} size={90} />
@@ -166,9 +176,7 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
                             <td className="text-start text-[15px] leading-6 font-semibold font-mono">
                               {
                                 [
-                                  bill.info.appdate
-                                    ? `${bill.info.appdate}`
-                                    : "",
+                                  bill.info.appdate ? <CurrentDate /> : "",
                                   `${payerName}`,
                                   payerAddress ? `${payerAddress}` : "",
                                   "Business Billing and Payment",

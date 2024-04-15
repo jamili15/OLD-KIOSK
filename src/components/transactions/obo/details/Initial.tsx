@@ -1,17 +1,17 @@
 import Keyboard from "@/components/keyboard/Keyboard";
 import ActionBar from "@/components/layout/ActionBar";
 import Alert from "@/components/layout/Alert";
+import { Loading } from "@/components/layout/Loading";
 import Button from "@/components/ui/Button";
 import Textbox from "@/components/ui/Textbox";
 import Title from "@/components/ui/Title";
+import { lookupService } from "@/libs/client-service";
 import { useOboBillingContext } from "@/services/context/obo-context";
 import { useStepper } from "@/services/context/stepper-context";
+import { sleep } from "@/utils/helper";
+import { loadBill } from "@/utils/obo";
 import { useRef, useState } from "react";
 import Layout from "./Layout";
-import { lookupService } from "@/libs/client-service";
-import { loadBill } from "@/utils/obo";
-import { sleep } from "@/utils/helper";
-import { Loading } from "@/components/layout/Loading";
 
 const OboInitial = () => {
   const { goToNextStep, goToPrevStep } = useStepper();

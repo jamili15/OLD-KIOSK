@@ -14,39 +14,54 @@ export default async function handler(
 
 async function POST(req: NextApiRequest, res: NextApiResponse) {
   const EscPosEncoder = require("esc-pos-encoder");
-
   try {
     const lguName = process.env.LGU_NAME;
     const recieveTicketInfo = req.body;
+    console.log(recieveTicketInfo.qrImage);
     const encoder = new EscPosEncoder();
     const commands = encoder
       .initialize()
       .align("center")
-      .width(2)
-      .height(2)
-      .bold()
-      .text("Queue Ticket Number")
-      .bold()
-      .newline()
       .width(1)
-      .height(2)
+      .height(1)
       .bold()
+      .text("REPUBLIC OF THE PHILIPPINES")
+      .newline()
       .text(lguName)
       .newline()
-      .width(5)
-      .height(5)
-      .bold()
-      .text(`${recieveTicketInfo.ticketno}`)
+      .width(2)
+      .height(2)
+      .text("QUEUE NO")
+      .newline()
+      .text(recieveTicketInfo.seriesNo)
       .newline()
       .width(1)
       .height(1)
-      .text("This is number is valid only on")
+      .bold()
+      .text("PRESENT THIS RECEIPT TO THE COLLECTOR")
       .newline()
-      .text(`${recieveTicketInfo.date}`)
+      .align("left")
+      .table(
+        [
+          { width: 20, align: "left" },
+          { width: 28, align: "right" },
+        ],
+        [
+          ["Payer", recieveTicketInfo.payerName],
+          ["Address", recieveTicketInfo.payerAddr],
+          ["Particulars", recieveTicketInfo.particulars],
+          ["Total", `${recieveTicketInfo.totalAmt}`],
+          ["Bill No", recieveTicketInfo.controlNo],
+        ]
+      )
+      .align("center")
+      .qrcode(recieveTicketInfo.qrImage, 1, 4, "h")
+      .newline()
+      .text(recieveTicketInfo.qrImage)
       .newline()
       .newline()
       .newline()
-      .cut("full")
+      .cut("full") // Cut the paper
       .encode();
 
     const printResponse = await axios.post(

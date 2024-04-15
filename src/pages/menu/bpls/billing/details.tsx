@@ -1,7 +1,7 @@
 import ActionBar from "@/components/layout/ActionBar";
 import BplsInfo from "@/components/transactions/bpls/details/Info";
 import Button from "@/components/ui/Button";
-
+import useTimer from "@/hooks/useTimer";
 import { lookupService } from "@/libs/client-service";
 import { useBillingContext } from "@/services/context/billing-context";
 import { useStepper } from "@/services/context/stepper-context";
@@ -12,10 +12,12 @@ const BillingPage = () => {
   const { bill, setCode, setSection } = useBillingContext();
   const svc = lookupService("BplsBillingService");
 
+  const timeLimit = 120000;
+  useTimer(timeLimit);
+
   const nextPage = async () => {
     if (!bill || !bill.info) {
-      console.error("Billing information is not available.");
-      return;
+      console.log(bill);
     }
 
     const data = await svc?.invoke("generateCode", {

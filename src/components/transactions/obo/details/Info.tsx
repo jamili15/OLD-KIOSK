@@ -1,11 +1,8 @@
 import Currency from "@/components/ui/Currency";
 import Input from "@/components/ui/Input";
 import Title from "@/components/ui/Title";
-import { lookupService } from "@/libs/client-service";
 
 import { useOboBillingContext } from "@/services/context/obo-context";
-import { loadBill } from "@/utils/obo";
-import { useEffect } from "react";
 
 interface ItemType {
   title: string;

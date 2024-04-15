@@ -1,3 +1,4 @@
+import CurrentDate from "@/components/ui/Date";
 import Title from "@/components/ui/Title";
 import { ticketInfo } from "@/stores/lgu-info";
 import Image from "next/image";
@@ -68,7 +69,7 @@ const PaymentPrintTicket: ForwardRefRenderFunction<
       <div className="flex flex-col">
         <Title
           text="present this receipt to the collector"
-          classname="uppercase"
+          classname="uppercase text-center"
           textSize="text-[12px] pl-4"
         />
         <table>
@@ -77,10 +78,10 @@ const PaymentPrintTicket: ForwardRefRenderFunction<
               <tr key={index} className="text-start text-[12px]">
                 <td className="capitalize w-[90px] pl-4">{label}</td>
                 <td>
-                  {label === "trxn date" && appDate}
+                  {label === "trxn date" && <CurrentDate />}
                   {label === "payer" && payerName}
                   {label === "address" && addr}
-                  {label === "particulars" && "Business and Licensing"}
+                  {label === "particulars" && "BUSINESS AND LICENSING"}
                   {label === "total" && total}
                   {label === "bin no" && binNo}
                 </td>

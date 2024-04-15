@@ -7,8 +7,8 @@ export const queueTicket = (sendTicketInfo = {}) => {
   });
 };
 
-export const billingTicket = (sendTicketInfo = {}) => {
-  return makeRequest("/api/bpls/printTicket", {
+export const printTicket = (sendTicketInfo = {}) => {
+  return makeRequest("/api/printTicket", {
     method: "POST",
     data: sendTicketInfo,
   });
