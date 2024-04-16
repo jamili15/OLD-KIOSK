@@ -63,6 +63,8 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
       .newline()
       .newline()
       .newline()
+      .newline()
+      .newline()
       .cut("full") // Cut the paper
       .encode();
 
