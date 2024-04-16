@@ -63,12 +63,12 @@ const PaymentInformation = () => {
       <div className="flex flex-col gap-8 text-[28px]">
         <Textbox
           label="Payer Name"
-          className="w-full !p-4 text-[40px] text-start border-b-2 border-black rounded-none !h-[70px]"
+          className="w-full !p-4 text-[40px] text-start border-b-2 border-black rounded-none !h-[50px]"
           ref={payerNameInput}
         />
         <Textbox
           label="Payer Address"
-          className="w-full !p-4 text-[40px] text-start border-b-2 border-black rounded-none !h-[70px]"
+          className="w-full !p-4 text-[40px] text-start border-b-2 border-black rounded-none !h-[50px]"
           ref={payerAddressInput}
         />
       </div>

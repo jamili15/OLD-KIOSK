@@ -5,7 +5,7 @@ import { useEffect } from "react";
 const DisableContextMenu = ({ children }) => {
   useEffect(() => {
     const handleContextMenu = (event) => {
-      event.preventDefault();
+      // event.preventDefault();
     };
 
     document.addEventListener("contextmenu", handleContextMenu);
