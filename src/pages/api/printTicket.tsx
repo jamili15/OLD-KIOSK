@@ -16,8 +16,11 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
   const EscPosEncoder = require("esc-pos-encoder");
   try {
     const lguName = process.env.LGU_NAME;
+    const currentDate = new Date();
+    const month = currentDate.getMonth() + 1; // Adding 1 because getMonth() returns zero-based index
+    const day = currentDate.getDate();
+    const year = currentDate.getFullYear();
     const recieveTicketInfo = req.body;
-    console.log(recieveTicketInfo.qrImage);
     const encoder = new EscPosEncoder();
     const commands = encoder
       .initialize()
@@ -47,6 +50,7 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
           { width: 28, align: "right" },
         ],
         [
+          ["Date", `${month}/${day}/${year}`],
           ["Payer", recieveTicketInfo.payerName],
           ["Address", recieveTicketInfo.payerAddr],
           ["Particulars", recieveTicketInfo.particulars],
@@ -56,8 +60,6 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
       )
       .align("center")
       .qrcode(recieveTicketInfo.qrImage, 1, 4, "h")
-      .newline()
-      .text(recieveTicketInfo.qrImage)
       .newline()
       .newline()
       .newline()

@@ -50,7 +50,7 @@ export const modules = [
   },
   {
     title: "Cedula",
-    image: "/icons/user.png",
+    image: "/icons/water.png",
     alt: "",
     target: "",
     active: false,
