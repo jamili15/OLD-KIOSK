@@ -46,8 +46,8 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
       .align("left")
       .table(
         [
-          { width: 20, align: "left" },
-          { width: 28, align: "right" },
+          { width: 16, align: "left" },
+          { width: 24, align: "right" },
         ],
         [
           ["Date", `${month}/${day}/${year}`],
