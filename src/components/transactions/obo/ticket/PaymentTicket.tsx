@@ -40,8 +40,8 @@ const PaymentTicket: React.FC<PaymentTicketProps> = ({
       payerName: payerName,
       payerAddr: payerAddress,
       particulars: "OSCP Billing And Payment",
-      controlNo: oboBill.info.bin,
-      totalAmt: oboBill.info.amount,
+      controlNo: oboBill.app,
+      totalAmt: oboBill.amount,
       seriesNo: seriesno,
       qrImage: combinedData,
     };
