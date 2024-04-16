@@ -16,7 +16,7 @@ const QueueSectionList: React.FC<QueueSectionListProps> = ({
   onClick,
 }) => {
   return (
-    <div className="grid grid-cols-3 grid-flow-row gap-16">
+    <div className="grid grid-cols-3 grid-flow-row gap-10">
       {sections.map((section: QueueSection) => (
         <QueueItem
           key={section.objid}

@@ -15,7 +15,7 @@ const QueueItem: React.FC<QueueItemProps> = ({ title, className, onClick }) => {
       >
         <Button
           buttonText={title}
-          classname="border-none text-2xl font-bold w-full h-full !px-5 "
+          classname="border-none text-lg font-bold w-full h-full !px-5 "
           onClick={onClick}
         />
       </div>

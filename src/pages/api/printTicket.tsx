@@ -43,11 +43,10 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
       .bold()
       .text("PRESENT THIS RECEIPT TO THE COLLECTOR")
       .newline()
-      .align("left")
       .table(
         [
-          { width: 16, align: "left" },
-          { width: 24, align: "right" },
+          { width: 10, align: "left" },
+          { width: 34, align: "right" },
         ],
         [
           ["Date", `${month}/${day}/${year}`],
